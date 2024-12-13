@@ -12,6 +12,7 @@ import java.util.Map;
 
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import com.product.entity.ProductEntity;
+import com.product.userEntity.UserEntity;
 
 public class DBUtils {
 
@@ -343,6 +344,44 @@ public class DBUtils {
 			}
 		}
 		return null;
+	}
+
+	public Integer addUser(UserEntity user) {
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		int rowsAffected = 0;
+
+		try {
+
+			connection = getDBConnection();
+			String addProductQuery = "INSERT INTO PRODUCT_DB.user (name, gender, mobile_number, email_address) VALUES (?, ?, ?, ?)";
+
+			preparedStatement = connection.prepareStatement(addProductQuery);
+			preparedStatement.setString(1, user.getName());
+			preparedStatement.setString(1, user.getGender());
+			preparedStatement.setString(1, user.getMobileNumber());
+			preparedStatement.setString(1, user.getEmailsAddress());
+
+			rowsAffected = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return rowsAffected;
+
 	}
 
 }

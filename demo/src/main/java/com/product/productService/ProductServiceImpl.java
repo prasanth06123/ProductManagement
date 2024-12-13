@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 import com.product.db.DBUtils;
 import com.product.entity.OrderEntity;
 import com.product.entity.OrderItemEntity;
 import com.product.entity.ProductEntity;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 @Service
 public class ProductServiceImpl {
@@ -247,4 +246,5 @@ public class ProductServiceImpl {
 		}
 		return response;
 	}
+
 }
