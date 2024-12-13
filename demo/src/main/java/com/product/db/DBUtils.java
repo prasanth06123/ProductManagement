@@ -361,7 +361,7 @@ public class DBUtils {
 			preparedStatement.setString(1, user.getName());
 			preparedStatement.setString(1, user.getGender());
 			preparedStatement.setString(1, user.getMobileNumber());
-			preparedStatement.setString(1, user.getEmailsAddress());
+			preparedStatement.setString(1, user.getEmailAddress());
 
 			rowsAffected = preparedStatement.executeUpdate();
 
@@ -381,6 +381,68 @@ public class DBUtils {
 			}
 		}
 		return rowsAffected;
+
+	}
+
+	public List<Map<String, Object>> retrieveUser(UserEntity user, String action) {
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+
+			connection = getDBConnection();
+
+			if ("login".equals(action)) {
+				String addProductQuery = "SELECT * FROM PRODUCT_DB.order where EMAIL_ADDRESS = ? and PASSWORD = ?";
+
+				preparedStatement = connection.prepareStatement(addProductQuery);
+				preparedStatement.setString(1, user.getEmailAddress());
+				preparedStatement.setString(2, user.getPassword());
+			} else {
+				String addProductQuery = "SELECT * FROM PRODUCT_DB.order where MOBILE_NUMBER = ? and EMAIL_ADDRESS = ?";
+
+				preparedStatement = connection.prepareStatement(addProductQuery);
+				preparedStatement.setString(1, user.getMobileNumber());
+				preparedStatement.setString(2, user.getEmailAddress());
+			}
+
+			List<Map<String, Object>> usersList = new ArrayList<>();
+			ResultSetMetaData metaData = (ResultSetMetaData) resultSet.getMetaData();
+			int columnCount = metaData.getColumnCount();
+
+			while (resultSet.next()) {
+
+				Map<String, Object> rowMap = new HashMap<>();
+				for (int i = 1; i <= columnCount; i++) {
+
+					String columnName = metaData.getColumnName(i);
+					Object value = resultSet.getObject(i);
+					rowMap.put(columnName, value);
+				}
+
+				usersList.add(rowMap);
+			}
+
+			return usersList;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 
 	}
 

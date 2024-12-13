@@ -6,7 +6,16 @@ public class UserEntity {
 	private String name;
 	private String gender;
 	private String mobileNumber;
-	private String emailsAddress;
+	private String emailAddress;
+	private String password;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public String getId() {
 		return id;
@@ -40,12 +49,12 @@ public class UserEntity {
 		this.mobileNumber = mobileNumber;
 	}
 
-	public String getEmailsAddress() {
-		return emailsAddress;
+	public String getEmailAddress() {
+		return emailAddress;
 	}
 
-	public void setEmailsAddress(String emailsAddress) {
-		this.emailsAddress = emailsAddress;
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
 	}
 
 }

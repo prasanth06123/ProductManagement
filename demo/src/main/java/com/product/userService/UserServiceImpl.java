@@ -1,6 +1,7 @@
 package com.product.userService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +26,11 @@ public class UserServiceImpl {
 			if (user != null) {
 
 				validateUserData(user, response);
+				if (!response.isEmpty()) {
+					return response;
+				}
+
+				checkUserAlreadyExist(user, response);
 				if (!response.isEmpty()) {
 					return response;
 				}
@@ -55,6 +61,11 @@ public class UserServiceImpl {
 
 			if (!userName.isEmpty() && !password.isEmpty()) {
 
+				checkValidUser(userName, password, response);
+				if (!response.isEmpty()) {
+					return response;
+				}
+
 				JWTAuthenticationService jwtAuthenticationService = new JWTAuthenticationService();
 				token = jwtAuthenticationService.generateToken(userName);
 
@@ -82,7 +93,7 @@ public class UserServiceImpl {
 			String name = user.getName();
 			String gender = user.getGender();
 			String mobileNumber = user.getMobileNumber();
-			String emailAddress = user.getEmailsAddress();
+			String emailAddress = user.getEmailAddress();
 
 			if (name.isEmpty() || gender.isEmpty() || mobileNumber.isEmpty() || emailAddress.isEmpty()) {
 
@@ -93,6 +104,46 @@ public class UserServiceImpl {
 		} catch (Exception e) {
 			LOG.error("ERROR @validateUserData =>" + e.getMessage(), e);
 		}
+		return response;
+	}
+
+	private Map<String, Object> checkUserAlreadyExist(UserEntity user, Map<String, Object> response) {
+
+		try {
+
+			List<Map<String, Object>> userData = dbUtils.retrieveUser(user, null);
+
+			if (!userData.isEmpty()) {
+				response.put("status", "ERROR");
+				response.put("message", "User Already exist");
+			}
+
+		} catch (Exception e) {
+			LOG.error("ERROR @checkUserAlreadyExist =>" + e.getMessage(), e);
+		}
+
+		return response;
+	}
+
+	private Map<String, Object> checkValidUser(String userName, String password, Map<String, Object> response) {
+
+		try {
+
+			UserEntity user = new UserEntity();
+			user.setEmailAddress(userName);
+			user.setPassword(password);
+
+			List<Map<String, Object>> userData = dbUtils.retrieveUser(user, "login");
+
+			if (!userData.isEmpty()) {
+				response.put("status", "ERROR");
+				response.put("message", "Invalid User");
+			}
+
+		} catch (Exception e) {
+			LOG.error("ERROR @checkUserAlreadyExist =>" + e.getMessage(), e);
+		}
+
 		return response;
 	}
 
