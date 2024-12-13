@@ -45,7 +45,9 @@ public class JWTAuthenticationService {
 		return token;
 	}
 
-	public String validateToken(String jwtToken) {
+	public boolean validateToken(String jwtToken) {
+
+		boolean validToken = false;
 
 		try {
 
@@ -57,15 +59,15 @@ public class JWTAuthenticationService {
 			System.out.println("Expiration: " + body.getExpiration());
 
 			if (body.getExpiration().before(new Date())) {
-				System.out.println("Token is expired");
+				validToken = false;
 			} else {
-				System.out.println("Token is valid");
+				validToken = true;
 			}
 
 		} catch (Exception e) {
 			LOG.error("ERROR @validateToken =>" + e.getMessage(), e);
 		}
-		return null;
+		return validToken;
 	}
 
 }
